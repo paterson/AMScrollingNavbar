@@ -317,7 +317,9 @@ public class ScrollingNavigationController: UINavigationController, UIGestureRec
         // Hide all possible button items and navigation items
         for item in navigationBar.subviews {
             if let view = item as? UIView {
-                view.alpha = alpha
+                if view.classForCoder.description() == "UINavigationButton" || view.classForCoder.description() == "UINavigationItemView" || view.classForCode.description() == "UISearchBar" {
+                    view.alpha = alpha
+                }
             }
         }
 
