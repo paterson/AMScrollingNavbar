@@ -328,15 +328,19 @@ public class ScrollingNavigationController: UINavigationController, UIGestureRec
         }
 
         // Hide the left items
-        visibleViewController.navigationItem.leftBarButtonItem?.customView?.alpha = alpha
-        if let leftItems = visibleViewController.navigationItem.leftBarButtonItems as? [UIBarButtonItem] {
-            leftItems.map({ $0.customView?.alpha = alpha })
+        if let visibleViewController = visibleViewController {
+            visibleViewController.navigationItem.leftBarButtonItem?.customView?.alpha = alpha
+            if let leftItems = visibleViewController.navigationItem.leftBarButtonItems as? [UIBarButtonItem] {
+                leftItems.map({ $0.customView?.alpha = alpha })
+            }
         }
 
         // Hide the right items
-        visibleViewController.navigationItem.rightBarButtonItem?.customView?.alpha = alpha
-        if let leftItems = visibleViewController.navigationItem.rightBarButtonItems as? [UIBarButtonItem] {
-            leftItems.map({ $0.customView?.alpha = alpha })
+        if let visibleViewController = visibleViewController {
+            visibleViewController.navigationItem.rightBarButtonItem?.customView?.alpha = alpha
+            if let leftItems = visibleViewController.navigationItem.rightBarButtonItems as? [UIBarButtonItem] {
+                leftItems.map({ $0.customView?.alpha = alpha })
+            }
         }
     }
 
