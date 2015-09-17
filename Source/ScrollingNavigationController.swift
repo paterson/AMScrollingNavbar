@@ -88,12 +88,12 @@ public class ScrollingNavigationController: UINavigationController, UIGestureRec
     :param: animated If true the scrolling is animated. Defaults to `true`
     */
     public func hideNavbar(animated: Bool = true) {
-        if let scrollableView = self.scrollableView {
+        if let _ = self.scrollableView {
             if state == .Expanded {
                 self.state = .Scrolling
                 UIView.animateWithDuration(animated ? 0.1 : 0, animations: { () -> Void in
                     self.scrollWithDelta(self.fullNavbarHeight())
-                    self.visibleViewController.view.setNeedsLayout()
+                    self.visibleViewController?.view.setNeedsLayout()
                     if self.navigationBar.translucent {
                         let currentOffset = self.contentOffset()
                         self.scrollView()?.contentOffset = CGPoint(x: currentOffset.x, y: currentOffset.y + self.navbarHeight())
@@ -112,8 +112,8 @@ public class ScrollingNavigationController: UINavigationController, UIGestureRec
 
     :param: animated If true the scrolling is animated. Defaults to `true`
     */
-    public func showNavbar(animated: Bool = true) {
-        if let scrollableView = self.scrollableView {
+    public func showNavbar(animated animated: Bool = true) {
+        if let _ = self.scrollableView {
             if state == .Collapsed {
                 gestureRecognizer?.enabled = false
                 self.state = .Scrolling
@@ -121,7 +121,7 @@ public class ScrollingNavigationController: UINavigationController, UIGestureRec
                     self.lastContentOffset = 0;
                     self.delayDistance = -self.fullNavbarHeight()
                     self.scrollWithDelta(-self.fullNavbarHeight())
-                    self.visibleViewController.view.setNeedsLayout()
+                    self.visibleViewController?.view.setNeedsLayout()
                     if self.navigationBar.translucent {
                         let currentOffset = self.contentOffset()
                         self.scrollView()?.contentOffset = CGPoint(x: currentOffset.x, y: currentOffset.y - self.navbarHeight())
@@ -260,12 +260,14 @@ public class ScrollingNavigationController: UINavigationController, UIGestureRec
 
         // Resize the view if the navigation bar is not translucent
         if !navigationBar.translucent {
-            let navBarY = navigationBar.frame.origin.y + navigationBar.frame.size.height
-            let tabBarHeight = shouldIncludeTabBarHeight && !visibleViewController.hidesBottomBarWhenPushed ? CGFloat(50) : CGFloat(0)
-            frame = visibleViewController.view.frame
-            frame.origin = CGPoint(x: frame.origin.x, y: navBarY)
-            frame.size = CGSize(width: frame.size.width, height: view.frame.size.height - navBarY - tabBarHeight)
-            visibleViewController.view.frame = frame
+            if let visibleViewController = visibleViewController {
+                let navBarY = navigationBar.frame.origin.y + navigationBar.frame.size.height
+                let tabBarHeight = shouldIncludeTabBarHeight && !visibleViewController.hidesBottomBarWhenPushed ? CGFloat(50) : CGFloat(0)
+                frame = visibleViewController.view.frame
+                frame.origin = CGPoint(x: frame.origin.x, y: navBarY)
+                frame.size = CGSize(width: frame.size.width, height: view.frame.size.height - navBarY - tabBarHeight)
+                visibleViewController.view.frame = frame
+            }
         }
     }
 
@@ -282,7 +284,7 @@ public class ScrollingNavigationController: UINavigationController, UIGestureRec
     }
 
     func checkForPartialScroll() {
-        var frame = navigationBar.frame
+        let frame = navigationBar.frame
         var duration = NSTimeInterval(0)
         var delta = CGFloat(0.0)
 
@@ -319,18 +321,16 @@ public class ScrollingNavigationController: UINavigationController, UIGestureRec
         }
 
         // Hide all possible button items and navigation items
-        for item in navigationBar.subviews {
-            if let view = item as? UIView {
-                if view.classForCoder.description() == "UINavigationButton" || view.classForCoder.description() == "UINavigationItemView" || view.classForCoder.description() == "UISearchBar" {
-                    view.alpha = alpha
-                }
+        for view in navigationBar.subviews {
+            if view.classForCoder.description() == "UINavigationButton" || view.classForCoder.description() == "UINavigationItemView" || view.classForCoder.description() == "UISearchBar" {
+                view.alpha = alpha
             }
         }
 
         // Hide the left items
         if let visibleViewController = visibleViewController {
             visibleViewController.navigationItem.leftBarButtonItem?.customView?.alpha = alpha
-            if let leftItems = visibleViewController.navigationItem.leftBarButtonItems as? [UIBarButtonItem] {
+            if let leftItems = visibleViewController.navigationItem.leftBarButtonItems {
                 leftItems.map({ $0.customView?.alpha = alpha })
             }
         }
@@ -338,7 +338,7 @@ public class ScrollingNavigationController: UINavigationController, UIGestureRec
         // Hide the right items
         if let visibleViewController = visibleViewController {
             visibleViewController.navigationItem.rightBarButtonItem?.customView?.alpha = alpha
-            if let leftItems = visibleViewController.navigationItem.rightBarButtonItems as? [UIBarButtonItem] {
+            if let leftItems = visibleViewController.navigationItem.rightBarButtonItems {
                 leftItems.map({ $0.customView?.alpha = alpha })
             }
         }
