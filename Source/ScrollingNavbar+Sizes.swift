@@ -29,7 +29,7 @@ extension ScrollingNavigationController {
 
     func landscapeNavbar() -> CGFloat {
         if let topViewController = self.topViewController {
-            return 32 + ((self.topViewController.navigationItem.prompt != nil) ? 22 : 0)
+            return 32 + ((topViewController.navigationItem.prompt != nil) ? 22 : 0)
         }
         return 0
     }
