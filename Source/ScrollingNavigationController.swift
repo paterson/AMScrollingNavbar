@@ -331,7 +331,7 @@ public class ScrollingNavigationController: UINavigationController, UIGestureRec
         if let visibleViewController = visibleViewController {
             visibleViewController.navigationItem.leftBarButtonItem?.customView?.alpha = alpha
             if let leftItems = visibleViewController.navigationItem.leftBarButtonItems {
-                leftItems.map({ $0.customView?.alpha = alpha })
+                leftItems.forEach({ $0.customView?.alpha = alpha })
             }
         }
 
@@ -339,7 +339,7 @@ public class ScrollingNavigationController: UINavigationController, UIGestureRec
         if let visibleViewController = visibleViewController {
             visibleViewController.navigationItem.rightBarButtonItem?.customView?.alpha = alpha
             if let leftItems = visibleViewController.navigationItem.rightBarButtonItems {
-                leftItems.map({ $0.customView?.alpha = alpha })
+                leftItems.forEach({ $0.customView?.alpha = alpha })
             }
         }
     }
